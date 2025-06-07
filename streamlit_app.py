@@ -1,58 +1,63 @@
 import streamlit as st
 import webbrowser
 
-# ---------------------------
-# Streamlit Page Config
-# ---------------------------
-st.set_page_config(page_title="Utility Desk", layout="centered")
+st.set_page_config(page_title="Utility Desk", layout="wide")
 
-st.title("📚 Utility Desk")
+# ----------------------------
+# SIDEBAR - Calculator
+# ----------------------------
+st.sidebar.title("🧮 Calculator")
 
-# ---------------------------
-# Search Bar
-# ---------------------------
-st.subheader("🔍 Search Notes or Videos")
-query = st.text_input("Enter your topic:")
+calc_input = st.sidebar.text_input("Enter expression (e.g., 2+2):")
 
-if st.button("Search YouTube"):
-    if query:
-        webbrowser.open(f"https://www.youtube.com/results?search_query={query}")
-    else:
-        st.warning("Please enter a topic to search.")
-
-# ---------------------------
-# Quick Links
-# ---------------------------
-st.subheader("📂 Quick Access")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    if st.button("📘 Classroom"):
-        webbrowser.open("https://classroom.google.com")
-
-with col2:
-    if st.button("💬 WhatsApp"):
-        webbrowser.open("https://web.whatsapp.com")
-
-with col3:
-    if st.button("🎵 Spotify"):
-        webbrowser.open("https://open.spotify.com")
-
-# ---------------------------
-# Calculator
-# ---------------------------
-st.subheader("🧮 Calculator")
-
-calc_exp = st.text_input("Enter expression (e.g., 12 + 4 * 3):")
-
-if st.button("Calculate"):
+if st.sidebar.button("Calculate"):
     try:
-        result = eval(calc_exp)
-        st.success(f"Result: {result}")
-    except Exception as e:
-        st.error("Invalid Expression")
+        result = eval(calc_input)
+        st.sidebar.success(f"Result: {result}")
+    except:
+        st.sidebar.error("Invalid Expression")
 
-# Footer
+st.sidebar.markdown("---")
+st.sidebar.caption("Simple Python Eval Calculator")
+
+# ----------------------------
+# MAIN APP LAYOUT
+# ----------------------------
+
+col1, col2, col3 = st.columns([2, 3, 3])
+
+# LEFT COLUMN - YouTube Search
+with col1:
+    st.subheader("🔍 Search YouTube")
+    search_query = st.text_input("Search topic (notes, videos, etc.)")
+
+    if st.button("Search"):
+        if search_query:
+            search_url = f"https://www.youtube.com/results?search_query={search_query}"
+            st.markdown(f"[Click to view results ▶]({search_url})", unsafe_allow_html=True)
+        else:
+            st.warning("Enter a topic to search.")
+
+# MIDDLE COLUMN - WhatsApp
+with col2:
+    st.subheader("💬 WhatsApp Web")
+
+    # WhatsApp cannot be embedded due to CSP — we give a link with explanation
+    st.warning("WhatsApp Web does not support embedding due to security restrictions.")
+    st.markdown("[Open WhatsApp Web in new tab](https://web.whatsapp.com)", unsafe_allow_html=True)
+    st.image("https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg", width=100)
+
+# RIGHT COLUMN - Spotify Player
+with col3:
+    st.subheader("🎵 Spotify Player")
+
+    # You can embed a Spotify playlist/player if it's public
+    spotify_embed = """
+    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator" 
+    width="100%" height="380" frameBorder="0" allowfullscreen="" 
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    """
+    st.markdown(spotify_embed, unsafe_allow_html=True)
+
 st.markdown("---")
-st.caption("Made with ❤️ using Streamlit")
+st.caption("📚 Utility Desk App – Built with Streamlit")
