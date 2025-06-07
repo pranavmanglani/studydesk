@@ -1,9 +1,10 @@
 import streamlit as st
 import fitz  # PyMuPDF for PDF
 import base64
+import requests
+import re
 
 st.set_page_config(page_title="📚 Utility Desk", layout="wide")
-
 st.title("📚 Utility Desk Dashboard")
 
 # ------------------------
@@ -12,15 +13,26 @@ st.title("📚 Utility Desk Dashboard")
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["🔍 Search", "🧮 Calculator", "📓 Notes Viewer", "💬 WhatsApp", "🎵 Spotify"])
 
 # ------------------------
-# Tab 1: Search Tool
+# Tab 1: Search Tool with Video Embed
 # ------------------------
 with tab1:
     st.header("🔍 Search Notes or Videos")
     query = st.text_input("Enter your topic:")
     if st.button("Search on YouTube"):
         if query:
-            url = f"https://www.youtube.com/results?search_query={query}"
-            st.markdown(f"[Click here to view results ▶]({url})", unsafe_allow_html=True)
+            search_url = f"https://www.youtube.com/results?search_query={query.replace(' ', '+')}"
+            response = requests.get(search_url)
+
+            # Use regex to extract video IDs
+            video_ids = re.findall(r"watch\?v=(\S{11})", response.text)
+
+            if video_ids:
+                first_video_id = video_ids[0]
+                embed_url = f"https://www.youtube.com/embed/{first_video_id}"
+                st.video(embed_url)
+                st.markdown(f"[🔗 More results on YouTube]({search_url})", unsafe_allow_html=True)
+            else:
+                st.warning("No videos found. Try a different search term.")
         else:
             st.warning("Please enter a search query.")
 
