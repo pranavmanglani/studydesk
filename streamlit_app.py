@@ -80,4 +80,4 @@ with tab5:
     st.markdown(spotify_iframe, unsafe_allow_html=True)
 
 st.markdown("---")
-st.caption("Made with ❤️ using Streamlit – Your all-in-one study dashboard")
+st.caption("Made by Pranav Manglani An Indian 🇮🇳 – Your all-in-one study dashboard")
